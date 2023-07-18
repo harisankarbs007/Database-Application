@@ -1,0 +1,11 @@
+﻿192.168.111.14
+Replace the Above ip address with IP address of the extruder used. This automatically set the Application to connect to the Barcode scanner for that extruder as well.
+IP addresses:
+Extruder 1: 192.168.111.11
+Extruder 2: 192.168.111.12
+Extruder 3: 192.168.111.13
+Extruder 4: 192.168.111.14
+Extruder 5: 192.168.111.15
+Extruder 6: 192.168.111.16
+Extruder 7: 192.168.111.17
+Extruder 8: 192.168.111.18
