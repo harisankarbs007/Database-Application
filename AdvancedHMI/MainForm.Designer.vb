@@ -78,13 +78,13 @@ Partial Class MainForm
         Me.blFromPLC_updatespeed = New AdvancedHMIControls.BasicLabel()
         Me.blFromPLC_updatepressure = New AdvancedHMIControls.BasicLabel()
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.lToPLC_MoldRampdowntime = New System.Windows.Forms.Label()
+        Me.Label12 = New System.Windows.Forms.Label()
         Me.lToPLC_MoldControl = New System.Windows.Forms.Label()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.blFromPLC_NewBarcodeMemory = New AdvancedHMIControls.BasicLabel()
         Me.fromPLCQRtrigger = New AdvancedHMIControls.DataSubscriber(Me.components)
         Me.DataSubscriberPCACTIVE = New AdvancedHMIControls.DataSubscriber(Me.components)
-        Me.lToPLC_MoldRampdowntime = New System.Windows.Forms.Label()
-        Me.Label12 = New System.Windows.Forms.Label()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
@@ -973,6 +973,34 @@ Partial Class MainForm
         Me.Panel2.Size = New System.Drawing.Size(643, 218)
         Me.Panel2.TabIndex = 195
         '
+        'lToPLC_MoldRampdowntime
+        '
+        Me.lToPLC_MoldRampdowntime.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lToPLC_MoldRampdowntime.AutoSize = True
+        Me.lToPLC_MoldRampdowntime.BackColor = System.Drawing.Color.Transparent
+        Me.lToPLC_MoldRampdowntime.Enabled = False
+        Me.lToPLC_MoldRampdowntime.ForeColor = System.Drawing.Color.White
+        Me.lToPLC_MoldRampdowntime.Location = New System.Drawing.Point(111, 188)
+        Me.lToPLC_MoldRampdowntime.Name = "lToPLC_MoldRampdowntime"
+        Me.lToPLC_MoldRampdowntime.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lToPLC_MoldRampdowntime.Size = New System.Drawing.Size(105, 23)
+        Me.lToPLC_MoldRampdowntime.TabIndex = 194
+        Me.lToPLC_MoldRampdowntime.Text = "rampDown"
+        Me.lToPLC_MoldRampdowntime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label12
+        '
+        Me.Label12.BackColor = System.Drawing.Color.Transparent
+        Me.Label12.Enabled = False
+        Me.Label12.ForeColor = System.Drawing.Color.White
+        Me.Label12.Location = New System.Drawing.Point(3, 188)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(113, 31)
+        Me.Label12.TabIndex = 195
+        Me.Label12.Text = "Rampdowntime"
+        '
         'lToPLC_MoldControl
         '
         Me.lToPLC_MoldControl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -1051,34 +1079,6 @@ Partial Class MainForm
         Me.DataSubscriberPCACTIVE.ComComponent = Me.EthernetIPforSLCMicroCom1
         Me.DataSubscriberPCACTIVE.PLCAddressValue = CType(resources.GetObject("DataSubscriberPCACTIVE.PLCAddressValue"), MfgControl.AdvancedHMI.Drivers.PLCAddressItem)
         Me.DataSubscriberPCACTIVE.Value = Nothing
-        '
-        'lToPLC_MoldRampdowntime
-        '
-        Me.lToPLC_MoldRampdowntime.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lToPLC_MoldRampdowntime.AutoSize = True
-        Me.lToPLC_MoldRampdowntime.BackColor = System.Drawing.Color.Transparent
-        Me.lToPLC_MoldRampdowntime.Enabled = False
-        Me.lToPLC_MoldRampdowntime.ForeColor = System.Drawing.Color.White
-        Me.lToPLC_MoldRampdowntime.Location = New System.Drawing.Point(98, 188)
-        Me.lToPLC_MoldRampdowntime.Name = "lToPLC_MoldRampdowntime"
-        Me.lToPLC_MoldRampdowntime.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lToPLC_MoldRampdowntime.Size = New System.Drawing.Size(105, 23)
-        Me.lToPLC_MoldRampdowntime.TabIndex = 194
-        Me.lToPLC_MoldRampdowntime.Text = "rampDown"
-        Me.lToPLC_MoldRampdowntime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'Label12
-        '
-        Me.Label12.BackColor = System.Drawing.Color.Transparent
-        Me.Label12.Enabled = False
-        Me.Label12.ForeColor = System.Drawing.Color.White
-        Me.Label12.Location = New System.Drawing.Point(2, 188)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(101, 31)
-        Me.Label12.TabIndex = 195
-        Me.Label12.Text = "Rampdowntime"
         '
         'MainForm
         '

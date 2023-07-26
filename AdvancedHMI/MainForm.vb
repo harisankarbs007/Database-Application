@@ -220,7 +220,7 @@ Public Class MainForm
             Exit Sub
         End If
         SQL.AddParam("@id", Fiix_ID)
-        SQL.ExecQuery("SELECT moldno,speed,pressure,type,RateofPress,control,rampdwontime FROM MoldsDB WHERE fiix_id=@id", 0)
+        SQL.ExecQuery("SELECT moldno,speed,pressure,type,RateofPress,control,rampdowntime FROM MoldsDB WHERE fiix_id=@id", 0)
         lFiix_ID1.Text = Fiix_ID
         lToPLC_Speed.Text = SQL.SQLDS.Tables(0).Rows(0).Item("speed")
         lToPLC_Pressure.Text = SQL.SQLDS.Tables(0).Rows(0).Item("pressure")
@@ -278,33 +278,33 @@ Public Class MainForm
         lToPLC_Speed.Text = 0
         lToPLC_Pressure.Text = 0
         lToPLC_MoldType.Text = 0
-        lToPLC_Moldnumber.Text = "Not in DB"
+        lToPLC_Moldnumber.Text = 0
     End Sub
 
     '========================APPLICATION CONTROL==================================================================
-    Sub networklist()
-        'Get a list of IP addresses for all network interfaces on the local computer
+    'Sub networklist()
+    '    'Get a list of IP addresses for all network interfaces on the local computer
 
-        Dim networkInterfaces As NetworkInterface() = NetworkInterface.GetAllNetworkInterfaces()
-        Dim PCIPaddress As String = "0.0.0.0"
-        For Each networkInterface As NetworkInterface In networkInterfaces
-            Dim ipProperties As IPInterfaceProperties = networkInterface.GetIPProperties()
-            Dim unicastAddresses As UnicastIPAddressInformationCollection = ipProperties.UnicastAddresses()
+    '    Dim networkInterfaces As NetworkInterface() = NetworkInterface.GetAllNetworkInterfaces()
+    '    Dim PCIPaddress As String = "0.0.0.0"
+    '    For Each networkInterface As NetworkInterface In networkInterfaces
+    '        Dim ipProperties As IPInterfaceProperties = networkInterface.GetIPProperties()
+    '        Dim unicastAddresses As UnicastIPAddressInformationCollection = ipProperties.UnicastAddresses()
 
-            If networkInterface.Name.Contains("Ethernet") Then
-                PCIPaddress = unicastAddresses(1).Address.ToString
-            End If
-        Next
-        EthernetIPforSLCMicroCom1.IPAddress = "192.168.111.1" & Strings.Right((PCIPaddress), 1)
-        lblPCIPaddress.Text = "PC: " & PCIPADDRESS
-        lblipaddress.Text = "PLC: " & EthernetIPforSLCMicroCom1.IPAddress
-        m_reader.IpAddress = "192.168.111.10" & Strings.Right((PCIPaddress), 1)
-        lblQRipaddress.Text = "QR: " & m_reader.IpAddress
-        lblPCIPaddress.Text = "PC: " & "192.168.111.24" & Strings.Right((PCIPaddress), 1)
-        m_reader.CommandPort = 9003
-        m_reader.DataPort = 9004
-        lblExtrudername.Text = "Extruder " & Strings.Right((EthernetIPforSLCMicroCom1.IPAddress), 1)
-    End Sub
+    '        If networkInterface.Name.Contains("Ethernet") Then
+    '            PCIPaddress = unicastAddresses(1).Address.ToString
+    '        End If
+    '    Next
+    '    EthernetIPforSLCMicroCom1.IPAddress = "192.168.111.1" & Strings.Right((PCIPaddress), 1)
+    '    lblPCIPaddress.Text = "PC: " & PCIPADDRESS
+    '    lblipaddress.Text = "PLC: " & EthernetIPforSLCMicroCom1.IPAddress
+    '    m_reader.IpAddress = "192.168.111.10" & Strings.Right((PCIPaddress), 1)
+    '    lblQRipaddress.Text = "QR: " & m_reader.IpAddress
+    '    lblPCIPaddress.Text = "PC: " & "192.168.111.24" & Strings.Right((PCIPaddress), 1)
+    '    m_reader.CommandPort = 9003
+    '    m_reader.DataPort = 9004
+    '    lblExtrudername.Text = "Extruder " & Strings.Right((EthernetIPforSLCMicroCom1.IPAddress), 1)
+    'End Sub
 
     Private Sub EthernetIPforSLCMicroCom1_ComError(sender As Object, e As PlcComEventArgs) Handles EthernetIPforSLCMicroCom1.ComError
         MsgBox("Make Sure you have correct IP address on the getip text file in the application folder", MsgBoxStyle.OkOnly)
