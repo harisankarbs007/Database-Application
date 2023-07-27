@@ -7,6 +7,7 @@ Imports System.Drawing.Drawing2D
 Imports System.Net
 Imports System.Net.NetworkInformation
 Imports MfgControl.AdvancedHMI.Drivers.AllenBradley.PCCC
+Imports System.IO
 
 
 Public Class MainForm
@@ -44,8 +45,10 @@ Public Class MainForm
     End Sub
 
     Private Sub Form1_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        Writetolog("Form loaded")
         'Getting IP address from the text file in the Release folder
         EthernetIPforSLCMicroCom1.IPAddress = Strings.Left(My.Computer.FileSystem.ReadAllText("getip.txt"), 14)
+        Writetolog("ip address read")
         lblipaddress.Text = "PLC: " & EthernetIPforSLCMicroCom1.IPAddress
         m_reader.IpAddress = "192.168.111.10" & Strings.Right((EthernetIPforSLCMicroCom1.IPAddress), 1)
         lblQRipaddress.Text = "QR: " & m_reader.IpAddress
@@ -54,6 +57,7 @@ Public Class MainForm
         m_reader.DataPort = 9004
         lblExtrudername.Text = "Extruder " & Strings.Right((EthernetIPforSLCMicroCom1.IPAddress), 1)
         'Connect TCP/IP.
+        Writetolog("Connecting to QRcode scanner")
         m_reader.Connect(AddressOf ReceivedDataAction)
         cmdSEND.Enabled = True
     End Sub
@@ -66,6 +70,7 @@ Public Class MainForm
     Dim camconfig As Integer = 1
 
     Sub QRTRIGG()
+        Writetolog("Qrtigger started")
         Try
             lblDataText.Text = ""
             'BarcodrReaderControl.LON() 'SENDING LON COMMAND FOR TRIGGERING QRCODE SCANNER
@@ -78,14 +83,15 @@ Public Class MainForm
 
         Catch ex As Exception
             Label1.Text = ex.Message
-
+            Writetolog("Trigger Failed")
         End Try
         EthernetIPforSLCMicroCom1.Write("B9:0/6", "0")
-
+        Writetolog("QR triggered")
     End Sub
 
 
     Sub Camconfigchange()
+        Writetolog("Read failed attempting to change config")
         camfailcount += 1
         If camconfig = 3 Then
             camconfig = 1
@@ -94,14 +100,13 @@ Public Class MainForm
         lbCameraFail.Text = "Camerafailcount:" & camfailcount
         lbCamconfig.Text = "Cam config= " & CStr(camconfig)
 
-        'Try
-        '  BarcodrReaderControl.BLOAD(camconfig)
-        ReceivedDataWrite(m_reader.ExecCommand("BLOAD," & camconfig))
-        'Catch cex As Keyence.AutoID.CommandException
-        '    camerror = "Command err," & cex.ExtErrCode
-        '    Invoke(New camerrorchangeddelagate(AddressOf Camerrorchanged), camerror)
-        'End Try
-
+        Try
+            '  BarcodrReaderControl.BLOAD(camconfig)
+            ReceivedDataWrite(m_reader.ExecCommand("BLOAD," & camconfig))
+            Writetolog($"BLOAD {camconfig}")
+        Catch cex As Exception
+            Writetolog("BLOAD failed")
+        End Try
         Threading.Thread.Sleep(500)
     End Sub
 
@@ -123,11 +128,13 @@ Public Class MainForm
     Private Delegate Sub PLCcommerror(er As Exception)
     Private Sub ReceivedDataWrite(receivedData As String)
         lblDataText.Text = (receivedData)
+
         If lblDataText.Text = "ERROR" & vbCr And camfailcount < 3 Then
             EthernetIPforSLCMicroCom1.Write("B9:0/6", "0")
             Camconfigchange()
             QRTRIGG()
         ElseIf IsNumeric(receivedData) Then
+            Writetolog($"QRcode read successful")
             EthernetIPforSLCMicroCom1.Write("B9:0/6", "1")
             camfailcount = 0
         End If
@@ -147,8 +154,8 @@ Public Class MainForm
     End Sub
 
     'To send commands to the SR-1000 Barcode scanner
-    Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) Handles TextBox1.TextChanged
-        COMMAND = TextBox1.Text
+    Private Sub tbCommand_TextChanged(sender As Object, e As EventArgs) Handles tbCommand.TextChanged
+        COMMAND = tbCommand.Text
     End Sub
     'To Reconnect to camera when disconnected
     Private Sub cmdReconnect_Click(sender As Object, e As EventArgs) Handles cmdReconnect.Click
@@ -166,8 +173,11 @@ Public Class MainForm
         End If
         isCamTrigg = False
     End Sub
+
     Private Sub ConnectQR()
+        Writetolog($"Trying to connect to QR")
         m_reader.Connect(AddressOf ReceivedDataAction)
+        Writetolog($"Tried connecting to QR")
     End Sub
 
     'When barcode is recieved from the barcode scanner B9:0/6 is enabled. It trigger this sub routine to get data from the SQL database
@@ -179,21 +189,23 @@ Public Class MainForm
         'Check to see if the flag has changed
 
         If blFromPLC_NewBarcodeMemory.Value = True Then
+            Writetolog($"New Barcode read")
             Try
 
                 If ascii <> "ERROR" & vbCr Then
                     RefreshDB(lblDataText.Text)
                     Valid_Barcode = "1"
                     EthernetIPforSLCMicroCom1.Write("B9:0/10", Valid_Barcode)
+                    Writetolog($"Valid QR code read")
                 Else
                     Valid_Barcode = "0"
                     EthernetIPforSLCMicroCom1.Write("B9:0/10", Valid_Barcode)
+                    Writetolog($"Invalid QR code read")
                 End If
 
             Catch ex As Exception
                 Valid_Barcode = "0"
                 EthernetIPforSLCMicroCom1.Write("B9:0/10", Valid_Barcode)
-
                 ClearData()
                 lbException.Text = CStr(ex.Message)
             End Try
@@ -207,7 +219,6 @@ Public Class MainForm
     Private Sub EthernetIPforSLCMicroCom1_DataReceived(sender As Object, e As PlcComEventArgs) Handles EthernetIPforSLCMicroCom1.DataReceived
         If DataSubscriberPCACTIVE.Value = "False" Then
             EthernetIPforSLCMicroCom1.Write("B9:2/15", "1")
-
         End If
     End Sub
 
@@ -216,11 +227,13 @@ Public Class MainForm
     Private SQL As New MoldsSQLCE
     'getting values from the SQL Database and updating all the labels and values on PLC 
     Private Sub RefreshDB(Fiix_ID As String)
+        Writetolog($"SQL Access started for taking appropriate valiues")
         If Fiix_ID = "NoQRData" Or Fiix_ID = "ERROR" & vbCr Then
             Exit Sub
         End If
         SQL.AddParam("@id", Fiix_ID)
         SQL.ExecQuery("SELECT moldno,speed,pressure,type,RateofPress,control,rampdowntime FROM MoldsDB WHERE fiix_id=@id", 0)
+        Writetolog($"SQL query is ran")
         lFiix_ID1.Text = Fiix_ID
         lToPLC_Speed.Text = SQL.SQLDS.Tables(0).Rows(0).Item("speed")
         lToPLC_Pressure.Text = SQL.SQLDS.Tables(0).Rows(0).Item("pressure")
@@ -235,12 +248,14 @@ Public Class MainForm
         EthernetIPforSLCMicroCom1.Write("ST13:1", Trim(lToPLC_MoldType.Text))
         EthernetIPforSLCMicroCom1.Write("b9:4", lToPLC_MoldControl.Text)
         EthernetIPforSLCMicroCom1.Write("N11:15", lToPLC_MoldRampdowntime.Text) 'v3
+        Writetolog($"SQL access was successful")
         ' lDBRefreshedCount.Text = SQL.RecordCount
     End Sub
     'Getting Values from HMI and updating the Database for the mold no selected
     Private Sub BlUpdate_ValueChanged(sender As Object, e As EventArgs) Handles blupdate.ValueChanged
-        If blupdate.Text = "True" Then
 
+        If blupdate.Text = "True" Then
+            Writetolog($"Database update started")
             Try
                 SQL.AddParam("@mold", CInt(blFromPLC_Setmold.Text))
                 If blFromPLC_updatepressure.Text = "True" Then
@@ -264,10 +279,12 @@ Public Class MainForm
                 EthernetIPforSLCMicroCom1.Write("B9:0/13", "0")
                 EthernetIPforSLCMicroCom1.Write("B9:0/14", "0")
                 SQL.Params.Clear()
+                Writetolog($"Database update Successful")
             Catch ex As Exception
                 EthernetIPforSLCMicroCom1.Write("B9:0/14", "0")
                 ClearData()
                 lbException.Text = CStr(ex.Message)
+                Writetolog($"Database update failed")
             End Try
         End If
 
@@ -308,5 +325,17 @@ Public Class MainForm
 
     Private Sub EthernetIPforSLCMicroCom1_ComError(sender As Object, e As PlcComEventArgs) Handles EthernetIPforSLCMicroCom1.ComError
         MsgBox("Make Sure you have correct IP address on the getip text file in the application folder", MsgBoxStyle.OkOnly)
+    End Sub
+
+    Private Sub NoQRAlm_DataChanged(sender As Object, e As PlcComEventArgs) Handles NoQRAlm.DataChanged 'v3.1
+        Writetolog($"Reconnecting due to QRcode read failure")
+        ConnectQR()
+    End Sub
+    'v3.2 logging added to several places in the program.
+    Sub Writetolog(log As String)
+        Dim filePath As String = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log.txt")
+        Using writer As StreamWriter = New StreamWriter(filePath, True)
+            writer.WriteLine($"{DateTime.Now}--{log}")
+        End Using
     End Sub
 End Class

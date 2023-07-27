@@ -27,7 +27,7 @@ Partial Class MainForm
         Me.Label1 = New System.Windows.Forms.Label()
         Me.ForceItemsIntoToolBox1 = New MfgControl.AdvancedHMI.Drivers.ForceItemsIntoToolbox()
         Me.cmdSEND = New System.Windows.Forms.Button()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.tbCommand = New System.Windows.Forms.TextBox()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.lblDataText = New System.Windows.Forms.Label()
         Me.lbException = New System.Windows.Forms.Label()
@@ -85,6 +85,7 @@ Partial Class MainForm
         Me.blFromPLC_NewBarcodeMemory = New AdvancedHMIControls.BasicLabel()
         Me.fromPLCQRtrigger = New AdvancedHMIControls.DataSubscriber(Me.components)
         Me.DataSubscriberPCACTIVE = New AdvancedHMIControls.DataSubscriber(Me.components)
+        Me.NoQRAlm = New AdvancedHMIControls.DataSubscriber(Me.components)
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
@@ -93,6 +94,7 @@ Partial Class MainForm
         Me.Panel2.SuspendLayout()
         CType(Me.fromPLCQRtrigger, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataSubscriberPCACTIVE, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.NoQRAlm, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label1
@@ -118,12 +120,12 @@ Partial Class MainForm
         Me.cmdSEND.Text = "SEND"
         Me.cmdSEND.UseVisualStyleBackColor = True
         '
-        'TextBox1
+        'tbCommand
         '
-        Me.TextBox1.Location = New System.Drawing.Point(99, 28)
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(107, 27)
-        Me.TextBox1.TabIndex = 72
+        Me.tbCommand.Location = New System.Drawing.Point(99, 28)
+        Me.tbCommand.Name = "tbCommand"
+        Me.tbCommand.Size = New System.Drawing.Size(107, 27)
+        Me.tbCommand.TabIndex = 72
         '
         'Label8
         '
@@ -407,7 +409,7 @@ Partial Class MainForm
         Me.GroupBox1.Controls.Add(Me.lbCamconfig)
         Me.GroupBox1.Controls.Add(Me.lbCameraFail)
         Me.GroupBox1.Controls.Add(Me.lblDataText)
-        Me.GroupBox1.Controls.Add(Me.TextBox1)
+        Me.GroupBox1.Controls.Add(Me.tbCommand)
         Me.GroupBox1.Controls.Add(Me.cmdSEND)
         Me.GroupBox1.Font = New System.Drawing.Font("Arial", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GroupBox1.ForeColor = System.Drawing.Color.RosyBrown
@@ -1080,6 +1082,12 @@ Partial Class MainForm
         Me.DataSubscriberPCACTIVE.PLCAddressValue = CType(resources.GetObject("DataSubscriberPCACTIVE.PLCAddressValue"), MfgControl.AdvancedHMI.Drivers.PLCAddressItem)
         Me.DataSubscriberPCACTIVE.Value = Nothing
         '
+        'NoQRAlm
+        '
+        Me.NoQRAlm.ComComponent = Me.EthernetIPforSLCMicroCom1
+        Me.NoQRAlm.PLCAddressValue = CType(resources.GetObject("NoQRAlm.PLCAddressValue"), MfgControl.AdvancedHMI.Drivers.PLCAddressItem)
+        Me.NoQRAlm.Value = Nothing
+        '
         'MainForm
         '
         Me.AutoScroll = True
@@ -1114,6 +1122,7 @@ Partial Class MainForm
         Me.Panel2.PerformLayout()
         CType(Me.fromPLCQRtrigger, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DataSubscriberPCACTIVE, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.NoQRAlm, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1123,7 +1132,7 @@ Partial Class MainForm
     Friend WithEvents ForceItemsIntoToolBox1 As MfgControl.AdvancedHMI.Drivers.ForceItemsIntoToolbox
     Friend WithEvents PictureBox1 As PictureBox
     Friend WithEvents cmdSEND As Button
-    Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents tbCommand As TextBox
     Friend WithEvents EthernetIPforSLCMicroCom1 As AdvancedHMIDrivers.EthernetIPforSLCMicroCom
     Friend WithEvents blFromPLC_NewBarcodeMemory As AdvancedHMIControls.BasicLabel
     Friend WithEvents Label8 As Label
@@ -1181,4 +1190,5 @@ Partial Class MainForm
     Friend WithEvents Label10 As Label
     Friend WithEvents lToPLC_MoldRampdowntime As Label
     Friend WithEvents Label12 As Label
+    Friend WithEvents NoQRAlm As AdvancedHMIControls.DataSubscriber
 End Class
